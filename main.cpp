@@ -3,9 +3,7 @@
 
 using namespace std;
 
-int main()
-{
-    
+int Init_SDL(){
     if(SDL_Init(SDL_INIT_VIDEO) != 0){
         cout << "Error initializing" << SDL_GetError() << endl;
         return 0;
@@ -27,7 +25,29 @@ int main()
         return 0;
     }
 
-    getchar();
+    string imagePath = "flower.bmp";
+    SDL_Surface *bmp = SDL_LoadBMP(imagePath.c_str());
+    if(bmp == nullptr){
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        cout << "error initializing image exiting..." << SDL_GetError() << endl;
+        return 0;
+    }
 
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, bmp);
+    SDL_FreeSurface(bmp);
+
+    for(int i=0; i < 3;  ++i){
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(1000);
+    }
+}
+
+int main()
+{
+    Init_SDL();
     return 0;
 }
